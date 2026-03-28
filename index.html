@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Album sicantik</title>
+  <style>
+    @font-face {
+      font-family: 'Soul Billani';
+      src: url('font/SoulBillani.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'Cattyla';
+      src: url('font/Cattyla.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Quicksand:wght@500;700&display=swap');
+
+    :root {
+      --bg: radial-gradient(circle at top, #3a2740 0%, #211622 42%, #120d16 100%);
+      --phone: #19141d;
+      --card: #241b2a;
+      --soft: #2b2030;
+      --text: #f7d9e8;
+      --muted: #cfadc0;
+      --line: rgba(255,255,255,0.08);
+      --primary: #ff78ad;
+      --primary-2: #ffb8d4;
+      --accent: #ffd86f;
+      --shadow: 0 18px 45px rgba(149, 92, 120, 0.18);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Cattyla', 'Quicksand', Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 390px;
+      height: 844px;
+      background: var(--phone);
+      border: 10px solid #2f2230;
+      border-radius: 38px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.18);
+      position: relative;
+    }
+
+    .notch {
+      width: 145px;
+      height: 26px;
+      background: #2f2230;
+      border-radius: 0 0 18px 18px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+    }
+
+    .app {
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      padding: 46px 16px 88px;
+      overflow-y: auto;
+      background: linear-gradient(180deg, rgba(255,255,255,0.3), rgba(255,255,255,0.8));
+      transition: transform 0.35s ease, opacity 0.35s ease;
+    }
+
+    .screen.hidden-left {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .screen.hidden-right {
+      transform: translateX(100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .top-appbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 10px;
+    }
+
+    .top-appbar h1,
+    .top-appbar h2 {
+      font-family: 'Soul Billani', Georgia, serif;
+      font-size: 1.65rem;
+      color: #a24f74;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.9);
+      color: var(--text);
+      box-shadow: 0 8px 18px rgba(149, 92, 120, 0.15);
+      cursor: pointer;
+    }
+
+    .music-btn {
+      position: relative;
+      background: rgba(255,255,255,0.9);
+      transition: transform 0.2s ease, box-shadow 0.25s ease, background 0.25s ease, color 0.25s ease;
+    }
+
+    .music-btn::before,
+    .music-btn::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .music-btn::before {
+      border-style: solid;
+      border-width: 8px 0 8px 12px;
+      border-color: transparent transparent transparent currentColor;
+      margin-left: 2px;
+    }
+
+    .music-btn.playing::before,
+    .music-btn.playing::after {
+      width: 4px;
+      height: 14px;
+      border: none;
+      background: currentColor;
+      border-radius: 999px;
+      margin: 0;
+    }
+
+    .music-btn.playing::before {
+      transform: translate(-7px, -50%);
+    }
+
+    .music-btn.playing::after {
+      transform: translate(3px, -50%);
+    }
+
+    .music-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .music-btn.playing {
+      background: linear-gradient(135deg, #ff78ad, #c86bff);
+      color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(255, 120, 173, 0.14), 0 12px 26px rgba(200, 107, 255, 0.32);
+      animation: musicPulse 1.6s ease-in-out infinite;
+    }
+
+    .music-btn.playing::before,
+    .music-btn.playing::after {
+      background: #ffffff;
+    }
+
+    @keyframes musicPulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.06);
+      }
+    }
+
+    .welcome-card {
+      background: linear-gradient(135deg, #fff8fb, #ffe6f1);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+
+    .welcome-card p {
+      font-family: 'Cattyla', 'Quicksand', Arial, Helvetica, sans-serif;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+      margin-top: 8px;
+    }
+
+    .tab-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--line);
+      padding: 6px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      backdrop-filter: blur(8px);
+    }
+
+    .tab-btn {
+      font-family: 'Cattyla', 'Quicksand', Arial, Helvetica, sans-serif;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 12px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--primary), #ff92bc);
+      color: white;
+      box-shadow: 0 10px 20px rgba(255, 120, 173, 0.28);
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .polaroid {
+      border: none;
+      background: white;
+      padding: 10px 10px 16px;
+      border-radius: 10px;
+      box-shadow: 0 14px 25px rgba(107, 63, 86, 0.18);
+      position: relative;
+      text-align: left;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .polaroid:nth-child(odd) {
+      transform: rotate(-2deg);
+    }
+
+    .polaroid:nth-child(even) {
+      transform: rotate(2deg);
+    }
+
+    .polaroid:hover {
+      transform: translateY(-4px) rotate(0deg);
+    }
+
+    .tape {
+      width: 54px;
+      height: 18px;
+      border-radius: 4px;
+      background: rgba(255, 221, 162, 0.65);
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-3deg);
+    }
+
+    .photo {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      border-radius: 6px;
+      display: block;
+    }
+
+    .caption {
+      font-family: 'Cattyla', 'Quicksand', Arial, Helvetica, sans-serif;
+      margin-top: 12px;
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .caption strong {
+      font-family: 'Soul Billani', Georgia, serif;
+      display: block;
+      font-size: 1.05rem;
+      color: var(--text);
+      margin-bottom: 0;
+    }
+
+    .slider-shell {
+      overflow: hidden;
+      border-radius: var(--radius-xl);
+      background: white;
+      box-shadow: var(--shadow);
+      margin-bottom: 12px;
+    }
+
+    .slider-track {
+      display: flex;
+      transition: transform 0.35s ease;
+    }
+
+    .slide {
+      min-width: 100%;
+      padding: 14px;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 360px;
+      object-fit: cover;
+      border-radius: 20px;
+      display: block;
+    }
+
+    .blank-slide {
+      width: 100%;
+      height: 360px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, #f4f4f4 0%, #cfcfcf 45%, #111111 100%);
+      color: rgba(255,255,255,0.9);
+      font-family: 'Soul Billani', Georgia, serif;
+      font-size: 2rem;
+      letter-spacing: 0.03em;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+    }
+
+    .blank-slide span {
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.22);
+    }
+
+    .slide-caption {
+      padding: 12px 6px 4px;
+    }
+
+    .slide-caption h3 {
+      font-family: 'Soul Billani', Georgia, serif;
+      font-size: 1.02rem;
+      margin-bottom: 6px;
+    }
+
+    .slide-caption p {
+      font-family: 'Cattyla', 'Quicksand', Arial, Helvetica, sans-serif;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .slider-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex: 1;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #efbfd1;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dot.active {
+      width: 24px;
+      border-radius: 999px;
+      background: var(--primary);
+    }
+
+    .detail-card,
+    .upload-card,
+    .memo-box {
+      background: white;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .detail-image-wrap {
+      position: relative;
+      margin-bottom: 14px;
+    }
+
+    .detail-image-wrap img {
+      width: 100%;
+      height: 380px;
+      object-fit: cover;
+      border-radius: 22px;
+      display: block;
+    }
+
+    .badge {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      background: rgba(255,255,255,0.9);
+      color: #a24f74;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .detail-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    .detail-title {
+      font-family: 'Soul Billani', Georgia, serif;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #8e4768;
+    }
+
+    .detail-desc,
+    .memo-box p,
+    .upload-card p {
+      font-family: 'Cattyla', 'Quicksand', Arial, Helvetica, sans-serif;
+      color: var(--muted);
+      font-size: 0.93rem;
+      line-height: 1.65;
+    }
+
+    .mini-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .pill {
+      border: none;
+      border-radius: 999px;
+      padding: 11px 10px;
+      background: var(--soft);
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .upload-card h3,
+    .memo-box h3 {
+      font-family: 'Soul Billani', Georgia, serif;
+      margin-bottom: 8px;
+      color: #8e4768;
+    }
+
+    .upload-form {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 0.86rem;
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .field input[type="text"],
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 13px;
+      background: #fffafd;
+      color: var(--text);
+      outline: none;
+    }
+
+    .field textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    .file-label {
+      display: block;
+      border: 2px dashed #f0bfd3;
+      background: #fff8fb;
+      border-radius: 18px;
+      padding: 16px;
+      text-align: center;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .field input[type="file"] {
+      display: none;
+    }
+
+    .preview-box {
+      display: none;
+      background: #fff8fb;
+      border-radius: 18px;
+      padding: 12px;
+      border: 1px solid var(--line);
+    }
+
+    .preview-box.show {
+      display: block;
+    }
+
+    .preview-box img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 16px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .primary-btn {
+      border: none;
+      border-radius: 16px;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary), #ff96bf);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 14px 25px rgba(255, 120, 173, 0.24);
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      background: rgba(255,255,255,0.95);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 8px;
+      gap: 6px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+      z-index: 20;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-btn {
+      border: none;
+      border-radius: 18px;
+      padding: 10px 6px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: grid;
+      gap: 4px;
+      place-items: center;
+    }
+
+    .nav-btn.active {
+      background: #fff0f7;
+      color: #a24f74;
+      font-weight: 700;
+    }
+
+    .favorite-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .favorite-item {
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    .favorite-item img {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 14px;
+    }
+
+    .favorite-item h4 {
+      font-size: 0.96rem;
+      margin-bottom: 4px;
+      color: #8e4768;
+    }
+
+    .favorite-item p,
+    .profile-meta,
+    .search-note {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .profile-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+      padding: 18px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    .profile-avatar {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      display: grid;
+      place-items: center;
+      font-size: 2rem;
+      background: linear-gradient(135deg, #ffd6e8, #fff2f8);
+      box-shadow: 0 10px 22px rgba(255,120,173,0.2);
+    }
+
+    .profile-card h3 {
+      color: #8e4768;
+      margin-bottom: 6px;
+    }
+
+    .search-box {
+      margin-bottom: 14px;
+    }
+
+    .search-box input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 13px 14px;
+      background: rgba(255,255,255,0.92);
+      color: var(--text);
+      outline: none;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px 18px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.7);
+      border: 1px dashed var(--line);
+      border-radius: 18px;
+    }
+
+    .pin-dots {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 14px 0 18px;
+    }
+
+    .pin-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #f1c2d6;
+      transition: 0.2s ease;
+    }
+
+    .pin-dot.filled {
+      background: #ff78ad;
+      transform: scale(1.05);
+    }
+
+    .pin-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .pin-key {
+      border: none;
+      border-radius: 18px;
+      padding: 16px 0;
+      background: #fff8fb;
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(149, 92, 120, 0.1);
+    }
+
+    .pin-helper {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .phone.dark .favorite-item,
+    .phone.dark .profile-card,
+    .phone.dark .search-box input,
+    .phone.dark .empty-state,
+    .phone.dark .pin-key {
+      background: #241b2a;
+      color: #f7d9e8;
+      border-color: rgba(255,255,255,0.06);
+    }
+
+    .phone.dark .favorite-item h4,
+    .phone.dark .profile-card h3 {
+      color: #ff9ec4;
+    }
+
+    .phone.dark .favorite-item p,
+    .phone.dark .profile-meta,
+    .phone.dark .search-note,
+    .phone.dark .empty-state,
+    .phone.dark .pin-helper {
+      color: #cfadc0;
+    }
+
+    .phone.dark .pin-dot {
+      background: #5a4252;
+    }
+
+    .phone.dark .pin-dot.filled {
+      background: #ff8fba;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      right: 16px;
+      top: 52px;
+      z-index: 25;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 8px 18px rgba(149, 92, 120, 0.16);
+      cursor: pointer;
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .phone.dark {
+      border-color: #141117;
+    }
+
+    .phone.dark .notch {
+      background: #141117;
+    }
+
+    .phone.dark {
+      background: #19141d;
+    }
+
+    .phone.dark .screen {
+      background: linear-gradient(180deg, rgba(33,24,36,0.96), rgba(18,14,21,0.98));
+    }
+
+    .phone.dark .top-appbar h1,
+    .phone.dark .top-appbar h2,
+    .phone.dark .detail-title,
+    .phone.dark .upload-card h3,
+    .phone.dark .memo-box h3 {
+      color: #ff9ec4;
+    }
+
+    .phone.dark .welcome-card,
+    .phone.dark .slider-shell,
+    .phone.dark .detail-card,
+    .phone.dark .upload-card,
+    .phone.dark .memo-box,
+    .phone.dark .bottom-nav,
+    .phone.dark .tab-switch,
+    .phone.dark .icon-btn,
+    .phone.dark .theme-toggle,
+    .phone.dark .preview-box,
+    .phone.dark .pill,
+    .phone.dark .file-label,
+    .phone.dark .field input[type="text"],
+    .phone.dark .field textarea {
+      background: #241b2a;
+      color: #f7d9e8;
+      border-color: rgba(255,255,255,0.06);
+    }
+
+    .phone.dark .caption,
+    .phone.dark .detail-desc,
+    .phone.dark .memo-box p,
+    .phone.dark .upload-card p,
+    .phone.dark .slide-caption p,
+    .phone.dark .welcome-card p,
+    .phone.dark .detail-meta,
+    .phone.dark .field label,
+    .phone.dark .nav-btn,
+    .phone.dark .tab-btn,
+    .phone.dark .file-label,
+    .phone.dark .footer-muted {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .overlay-screen {
+      position: absolute;
+      inset: 0;
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      transition: opacity 0.45s ease, visibility 0.45s ease, transform 0.45s ease;
+    }
+
+    .overlay-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: scale(1.03);
+    }
+
+    .splash-screen {
+      background: linear-gradient(180deg, #ffb7d5 0%, #ffddec 55%, #fff7fb 100%);
+      text-align: center;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .splash-bubble {
+      width: 186px;
+      height: 186px;
+      border-radius: 50%;
+      position: relative;
+      display: grid;
+      place-items: center;
+      animation: floaty 2.2s ease-in-out infinite;
+    }
+
+    .splash-bubble::before,
+    .splash-bubble::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      border: 4px solid #ffb2d0;
+      pointer-events: none;
+    }
+
+    .splash-bubble::after {
+      inset: 16px;
+      border-width: 3px;
+      opacity: 0.92;
+    }
+
+    .splash-photo {
+      width: 128px;
+      height: 128px;
+      border-radius: 50%;
+      overflow: hidden;
+      padding: 6px;
+      background: linear-gradient(145deg, rgba(255, 235, 244, 0.98), rgba(255, 179, 215, 0.88));
+      box-shadow: 0 18px 38px rgba(255, 120, 173, 0.18), 0 0 0 1px rgba(255,255,255,0.18);
+      z-index: 2;
+    }
+
+    .splash-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 50%;
+      filter: saturate(1.05) contrast(1.03);
+    }
+
+    .splash-heart {
+      position: absolute;
+      z-index: 3;
+      line-height: 1;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.14));
+    }
+
+    .splash-heart.dark {
+      color: #ffffff;
+    }
+
+    .splash-heart.pink {
+      color: #ff3ea1;
+    }
+
+    .splash-heart.h1 {
+      top: 12px;
+      left: 16px;
+      font-size: 2.6rem;
+      transform: rotate(-12deg);
+    }
+
+    .splash-heart.h2 {
+      top: 24px;
+      right: 20px;
+      font-size: 2.2rem;
+      transform: rotate(10deg);
+    }
+
+    .splash-heart.h3 {
+      left: 8px;
+      bottom: 42px;
+      font-size: 2rem;
+      transform: rotate(-16deg);
+    }
+
+    .splash-heart.h4 {
+      right: 18px;
+      bottom: 26px;
+      font-size: 1.9rem;
+      transform: rotate(8deg);
+    }
+
+    .splash-heart.h5 {
+      top: 38px;
+      left: 54px;
+      font-size: 1.2rem;
+    }
+
+    .splash-heart.h6 {
+      right: 42px;
+      top: 12px;
+      font-size: 1.35rem;
+    }
+
+    .splash-dot {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ff5a36;
+      z-index: 1;
+    }
+
+    .splash-dot.d1 {
+      top: 20px;
+      left: 34px;
+    }
+
+    .splash-dot.d2 {
+      top: 54px;
+      right: 34px;
+    }
+
+    .splash-dot.d3 {
+      left: 20px;
+      bottom: 36px;
+    }
+
+    .splash-dot.d4 {
+      bottom: 18px;
+      right: 36px;
+    }
+
+    .splash-screen h1 {
+      font-family: 'Soul Billani', 'Cormorant Garamond', Georgia, serif;
+      font-size: 2.7rem;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      color: #ffb2d0;
+      text-shadow: 0 8px 20px rgba(255, 120, 173, 0.12);
+    }
+
+    .splash-screen p {
+      font-family: 'Cattyla', 'Quicksand', Arial, Helvetica, sans-serif;
+      color: #f5d6e4;
+      font-size: 1.15rem;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      max-width: 240px;
+      line-height: 1.7;
+    }
+
+    .loader-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .loader-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ff78ad;
+      animation: blink 1s infinite ease-in-out;
+    }
+
+    .loader-dots span:nth-child(2) { animation-delay: 0.15s; }
+    .loader-dots span:nth-child(3) { animation-delay: 0.3s; }
+
+    .login-screen {
+      background: linear-gradient(180deg, rgba(255,245,250,0.95), rgba(255,255,255,0.98));
+    }
+
+    .login-card {
+      width: 100%;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      padding: 24px 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .login-top {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .login-top .emoji {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .login-top h2 {
+      font-family: Georgia, serif;
+      color: #9b4a70;
+      margin-bottom: 6px;
+      font-size: 1.6rem;
+    }
+
+    .login-top p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .login-form {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .login-actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .ghost-btn {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 13px;
+      background: #fff8fb;
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .login-hint {
+      margin-top: 10px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .phone.dark .splash-screen {
+      background: linear-gradient(180deg, #2a1a30 0%, #1b1320 100%);
+    }
+
+    .phone.dark .splash-screen h1,
+    .phone.dark .login-top h2 {
+      color: #ff9ec4;
+    }
+
+    .phone.dark .splash-screen p,
+    .phone.dark .login-top p,
+    .phone.dark .login-hint {
+      color: #cfadc0;
+    }
+
+    .phone.dark .splash-bubble,
+    .phone.dark .login-card,
+    .phone.dark .ghost-btn,
+    .phone.dark .login-screen {
+      background: #241b2a;
+      color: #f7d9e8;
+      border-color: rgba(255,255,255,0.06);
+    }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes blink {
+      0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    .phone.dark .caption strong,
+    .phone.dark .slide-caption h3 {
+      color: #ffe2ef;
+    }
+
+    .phone.dark .polaroid,
+    .phone.dark .badge {
+      background: #2a1f31;
+      color: #ffe5f0;
+    }
+
+    .phone.dark .tab-btn.active,
+    .phone.dark .primary-btn {
+      background: linear-gradient(135deg, #ff73ae, #c86bff);
+      color: white;
+    }
+
+    .phone.dark .nav-btn.active {
+      background: #302237;
+      color: #ff9ec4;
+    }
+
+    .phone.dark .dot {
+      background: #6f5162;
+    }
+
+    .phone.dark .dot.active {
+      background: #ff8fba;
+    }
+
+    .footer-muted {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone dark" id="phoneApp">
+    <div class="notch"></div>
+    <button class="theme-toggle" id="themeToggle" style="display:none;">🌙 Dark</button>
+
+    <div class="overlay-screen splash-screen" id="splashScreen">
+      <div class="splash-bubble">
+        <span class="splash-heart dark h1">♥</span>
+        <span class="splash-heart dark h2">♥</span>
+        <span class="splash-heart dark h3">♥</span>
+        <span class="splash-heart dark h4">♥</span>
+        <span class="splash-heart pink h5">♥</span>
+        <span class="splash-heart pink h6">♥</span>
+        <span class="splash-dot d1"></span>
+        <span class="splash-dot d2"></span>
+        <span class="splash-dot d3"></span>
+        <span class="splash-dot d4"></span>
+        <div class="splash-photo">
+          <img src="image/eca.jpeg" alt="Cover album">
+        </div>
+      </div>
+      <h1>Hi my pren</h1>
+      <p>i made this just for you!  </p>
+      <div class="loader-dots"><span></span><span></span><span></span></div>
+    </div>
+
+    <div class="overlay-screen login-screen hidden" id="pinScreen" style="display:none;">
+      <div class="login-card">
+        <div class="login-top">
+          <span class="emoji">🔒</span>
+          <h2>Eitss ini rahasia</h2>
+          <p>Coba ketik 1234. </p>
+        </div>
+
+        <div class="pin-dots" id="pinDots">
+          <span class="pin-dot"></span>
+          <span class="pin-dot"></span>
+          <span class="pin-dot"></span>
+          <span class="pin-dot"></span>
+        </div>
+
+        <div class="pin-helper" id="pinStatus">Tap angka untuk masuk ke aplikasi.</div>
+
+        <div class="pin-grid" id="pinGrid">
+          <button class="pin-key" data-pin="1">1</button>
+          <button class="pin-key" data-pin="2">2</button>
+          <button class="pin-key" data-pin="3">3</button>
+          <button class="pin-key" data-pin="4">4</button>
+          <button class="pin-key" data-pin="5">5</button>
+          <button class="pin-key" data-pin="6">6</button>
+          <button class="pin-key" data-pin="7">7</button>
+          <button class="pin-key" data-pin="8">8</button>
+          <button class="pin-key" data-pin="9">9</button>
+          <button class="pin-key" data-action="clear">⌫</button>
+          <button class="pin-key" data-pin="0">0</button>
+          <button class="pin-key" data-action="enter">↵</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay-screen login-screen hidden" id="loginScreen" style="display:none;">
+      <div class="login-card">
+        <div class="login-top">
+          <span class="emoji">🧸</span>
+          <h2>Masuk ke Album</h2>
+          <p>Tambahkan nama panggilan dan password sederhana supaya terasa seperti aplikasi pribadi yang lucu.</p>
+        </div>
+
+        <form class="login-form" id="loginForm">
+          <div class="field">
+            <label for="nicknameInput">Nama panggilan</label>
+            <input type="text" id="nicknameInput" placeholder="contoh: sayang / bestie / aku">
+          </div>
+
+          <div class="field">
+            <label for="passwordInput">Password</label>
+            <input type="text" id="passwordInput" placeholder="isi bebas, contoh: 1234">
+          </div>
+
+          <div class="login-actions">
+            <button type="submit" class="primary-btn">Masuk ke Gallery</button>
+            <button type="button" class="ghost-btn" id="guestLogin">Masuk sebagai tamu</button>
+          </div>
+        </form>
+
+        <div class="login-hint">demo UI: password belum divalidasi ketat, fokusnya untuk tampilan seperti aplikasi asli</div>
+      </div>
+    </div>
+
+    <div class="app">
+      <section class="screen" id="homeScreen">
+        <div class="top-appbar">
+          <h1 id="appTitle">Khusus si cantik</h1>
+          <button class="icon-btn music-btn" id="musicBtn" aria-label="Putar musik" title="Putar musik"></button>
+        </div>
+
+        <div class="welcome-card">
+          <strong>Haiii ecaa 💗</strong>
+          <p>
+            wkwk maap yak iseng bikin ginian, moga aja ga bikin kamu ilfil, aku agak sedikit pusing nii buatnya
+          </p>
+        </div>
+
+        <div class="tab-switch">
+          <button class="tab-btn active" data-tab="gridView">Si cantik</button>
+          <button class="tab-btn" data-tab="sliderView">Aku & sicantik</button>
+        </div>
+
+        <div class="view active" id="gridView">
+          <div class="gallery-grid" id="galleryGrid">
+            <button class="polaroid" data-title="cantik part 2" data-date="29 Maret 2026" data-tag="favorit" data-desc="foto random yang malah jadi favorit. senyumnya bikin harinya ikut cerah." data-src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80">
+              <div class="tape"></div>
+              <img class="photo" src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80" alt="Kenangan 1">
+              <div class="caption"><strong>cantik part 1</strong>foto random yang malah jadi favorit.</div>
+            </button>
+
+            <button class="polaroid" data-title="2 makhluk lucu" data-date="14 Februari 2026" data-tag="best day" data-desc="hari biasa yang ternyata paling ngangenin. obrolan receh tapi disimpan terus di hati." data-src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80">
+              <div class="tape"></div>
+              <img class="photo" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80" alt="Kenangan 2">
+              <div class="caption"><strong>2 cantik part 2</strong>hari biasa yang paling ngangenin.</div>
+            </button>
+
+            <button class="polaroid" data-title="senyum kecil" data-date="3 Januari 2026" data-tag="sweet" data-desc="satu foto, banyak cerita di belakangnya. diam-diam jadi salah satu memori terhangat." data-src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80">
+              <div class="tape"></div>
+              <img class="photo" src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80" alt="Kenangan 3">
+              <div class="caption"><strong>cantik part 3</strong>satu foto, banyak cerita.</div>
+            </button>
+
+            <button class="polaroid" data-title="mood hari ini" data-date="20 Maret 2026" data-tag="cute" data-desc="disimpan karena terlalu manis buat dilupain. cocok buat jadi halaman pembuka album." data-src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80">
+              <div class="tape"></div>
+              <img class="photo" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80" alt="Kenangan 4">
+              <div class="caption"><strong>cantik part 5</strong>terlalu manis buat dilupain.</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="view" id="sliderView">
+          <div class="slider-shell" id="sliderShell">
+            <div class="slider-track" id="sliderTrack"></div>
+          </div>
+
+          <div class="slider-controls">
+            <button class="icon-btn" id="prevSlide">‹</button>
+            <div class="dots" id="dots"></div>
+            <button class="icon-btn" id="nextSlide">›</button>
+          </div>
+
+          <div class="memo-box">
+            <h3>dibaca yaa</h3>
+            <p>
+              ecaa, makasi ya masih mau nemenin sejauh ini, maap kalo aku ga bisa romantis kek cowo" lain, maap belum bisa jadi yang eca harapin, tapi aku janji bkl berusaha buat eca, kedepannya aku bakal usahain apa yg buat eca seneng😇 makasii masi mau jadi temen baik ikyy
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen hidden-right" id="detailScreen">
+        <div class="top-appbar">
+          <button class="icon-btn" id="backToHome">←</button>
+          <h2>Detail Foto</h2>
+          <button class="icon-btn" id="shareBtn">♡</button>
+        </div>
+
+        <div class="detail-card">
+          <div class="detail-image-wrap">
+            <img id="detailImage" src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80" alt="Detail foto">
+            <div class="badge" id="detailTag">favorit</div>
+          </div>
+
+          <div class="detail-meta">
+            <span id="detailDate">29 Maret 2026</span>
+            <span>album pribadi</span>
+          </div>
+
+          <div class="detail-title" id="detailTitle">cantik part 2</div>
+          <p class="detail-desc" id="detailDesc">
+            foto random yang malah jadi favorit. senyumnya bikin harinya ikut cerah.
+          </p>
+
+          <div class="mini-actions">
+            <button class="pill" id="prevPhoto">Prev</button>
+            <button class="pill" id="nextPhoto">Next</button>
+            <button class="pill" id="likePhoto">Simpan</button>
+          </div>
+        </div>
+
+        <div class="memo-box">
+          <h3>Cerita kecil</h3>
+          <p>
+            Halaman ini dibuat khusus supaya tiap foto punya ruang sendiri. Kamu bisa isi tanggal, lokasi, mood, cerita panjang, bahkan voice note atau lagu khusus.
+          </p>
+        </div>
+      </section>
+
+      <section class="screen hidden-right" id="uploadScreen" style="display:none;">
+        <div class="top-appbar">
+          <button class="icon-btn" id="backHomeFromUpload">←</button>
+          <h2>Tambah Foto</h2>
+          <div style="width:40px"></div>
+        </div>
+
+        <div class="upload-card">
+          <h3>Upload foto sendiri</h3>
+          <p>
+            Pilih gambar dari perangkatmu, lalu isi judul dan caption. Setelah disimpan, fotonya otomatis masuk ke scrapbook dan bisa dibuka di halaman detail.
+          </p>
+
+          <form class="upload-form" id="uploadForm">
+            <div class="field">
+              <label for="photoFile">Foto</label>
+              <label class="file-label" for="photoFile" id="fileLabel">Klik untuk pilih foto</label>
+              <input type="file" id="photoFile" accept="image/*">
+            </div>
+
+            <div class="preview-box" id="previewBox">
+              <img id="previewImage" src="" alt="Preview upload">
+              <div class="footer-muted" id="previewName">preview.jpg</div>
+            </div>
+
+            <div class="field">
+              <label for="photoTitle">Judul</label>
+              <input type="text" id="photoTitle" placeholder="contoh: hari paling manis">
+            </div>
+
+            <div class="field">
+              <label for="photoDesc">Caption / cerita</label>
+              <textarea id="photoDesc" placeholder="tulis cerita singkat tentang foto ini..."></textarea>
+            </div>
+
+            <button type="submit" class="primary-btn">Simpan ke Album</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="screen hidden-right" id="favoritesScreen" style="display:none;">
+        <div class="top-appbar">
+          <button class="icon-btn" id="backHomeFromFav">←</button>
+          <h2>Favorit</h2>
+          <div style="width:40px"></div>
+        </div>
+
+        <div class="search-box">
+          <input type="text" id="searchFavorite" placeholder="Cari foto favorit...">
+        </div>
+
+        <div class="search-note">Foto yang kamu simpan dari halaman detail akan muncul di sini.</div>
+        <div class="favorite-list" id="favoriteList" style="margin-top:12px;"></div>
+      </section>
+
+      <section class="screen hidden-right" id="profileScreen" style="display:none;">
+        <div class="top-appbar">
+          <button class="icon-btn" id="backHomeFromProfile">←</button>
+          <h2>Profil</h2>
+          <div style="width:40px"></div>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-avatar">💗</div>
+          <h3 id="profileName">Gallery</h3>
+          <div class="profile-meta" id="profileMeta">Album kenangan pribadi yang disimpan lokal di browser.</div>
+        </div>
+
+        <div class="memo-box">
+          <h3>Statistik kecil</h3>
+          <p id="statsText">0 foto tersimpan • 0 favorit • tema pink lucu</p>
+        </div>
+
+        <div class="memo-box">
+          <h3>Penyimpanan localStorage</h3>
+          <p>Semua foto upload, favorit, nama profil, dan tema akan tetap tersimpan saat halaman direfresh di browser yang sama.</p>
+        </div>
+
+        <button class="primary-btn" id="logoutBtn" style="display:none;">Keluar ke Login</button>
+      </section>
+
+      <div class="bottom-nav" style="display:none;"></div>
+    </div>
+
+    <audio id="bgMusic" loop>
+      <source src="music/Nadhif%20Basalamah%20-%20kota%20ini%20tak%20sama%20tanpamu%20%28Official%20Lyric%20Video%29.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+
+  <script>
+    const phone = document.getElementById('phoneApp');
+    const splashScreen = document.getElementById('splashScreen');
+    const appTitle = document.getElementById('appTitle');
+    const screens = {
+      homeScreen: document.getElementById('homeScreen'),
+      detailScreen: document.getElementById('detailScreen')
+    };
+    const navButtons = document.querySelectorAll('.nav-btn[data-screen]');
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const views = document.querySelectorAll('.view');
+    const detailImage = document.getElementById('detailImage');
+    const detailTitle = document.getElementById('detailTitle');
+    const detailDesc = document.getElementById('detailDesc');
+    const detailDate = document.getElementById('detailDate');
+    const detailTag = document.getElementById('detailTag');
+    const musicBtn = document.getElementById('musicBtn');
+    const bgMusic = document.getElementById('bgMusic');
+    const sliderTrack = document.getElementById('sliderTrack');
+    const dotsWrap = document.getElementById('dots');
+    const galleryGrid = document.getElementById('galleryGrid');
+    const backToHome = document.getElementById('backToHome');
+    const prevPhoto = document.getElementById('prevPhoto');
+    const nextPhoto = document.getElementById('nextPhoto');
+    const likePhoto = document.getElementById('likePhoto');
+
+    const STORAGE_KEY = 'memoGalleryAppDataV1';
+    let currentPhotoIndex = 0;
+    let currentSlide = 0;
+    let isPlaying = false;
+    const DEFAULT_PROFILE_NAME = 'Khusus si cantik';
+    let currentUserName = DEFAULT_PROFILE_NAME;
+
+    const defaultGridPhotos = [
+      {
+        title: 'cantik part 1',
+        date: '29 Maret 2026',
+        tag: 'favorit',
+        desc: 'foto random yang malah jadi favorit. senyumnya bikin harinya ikut cerah.',
+        src: 'image/kolase1/1.jpeg'
+      },
+      {
+        title: 'cantik part 2',
+        date: '14 Februari 2026',
+        tag: 'best day',
+        desc: 'hari biasa yang ternyata paling ngangenin. obrolan receh tapi disimpan terus di hati.',
+        src: 'image/kolase1/2.jpeg'
+      },
+      {
+        title: 'cantik part 3',
+        date: '3 Januari 2026',
+        tag: 'sweet',
+        desc: 'satu foto, banyak cerita di belakangnya. diam-diam jadi salah satu memori terhangat.',
+        src: 'image/kolase1/3.jpeg'
+      },
+      {
+        title: 'cantik part 4',
+        date: '20 Maret 2026',
+        tag: 'cute',
+        desc: 'disimpan karena terlalu manis buat dilupain. cocok buat jadi halaman pembuka album.',
+        src: 'image/kolase1/4.jpeg'
+      },
+      {
+        title: 'cantik part 5',
+        date: '8 April 2026',
+        tag: 'lovely',
+        desc: 'foto yang vibes-nya lembut banget. cocok disimpan buat dilihat pas lagi kangen.',
+        src: 'image/kolase1/5.jpeg'
+      },
+      {
+        title: 'cantik part 6',
+        date: '11 Mei 2026',
+        tag: 'happy',
+        desc: 'senyumnya bikin mood ikut membaik. salah satu foto yang paling gampang bikin senyum balik.',
+        src: 'image/kolase1/6.jpeg'
+      },
+      {
+        title: 'cantik part 7',
+        date: '22 Juni 2026',
+        tag: 'soft',
+        desc: 'ada beberapa foto yang simpel, tapi justru ngena banget. yang ini salah satunya.',
+        src: 'image/kolase1/7.jpeg'
+      },
+      {
+        title: 'cantik part 8',
+        date: '2 Juli 2026',
+        tag: 'bestie',
+        desc: 'cocok jadi penutup album kecil ini, karena auranya hangat dan manis banget dilihat.',
+        src: 'image/kolase1/8.jpeg'
+      }
+    ];
+
+    const defaultSliderPhotos = [
+      {
+        title: 'fist meet',
+        caption: 'ini foto pertama kita pas pertama kali ketemu, keliatan masih malu-malu kann hahaa.',
+        src: 'image/kolase2/1 oke.jpg'
+      },
+      {
+        title: 'ultah kamuu',
+        caption: 'seexcited itu bisa ikut ngerayain ultah kamu, tpi maap ya belum bisa ngasih apa apa.',
+        src: 'image/kolase2/2 oke.jpg'
+      },
+      {
+        title: 'terakhir kali ketemu',
+        caption: 'ini pas kita beres nonton, malem kelaperan makan di angkringan.',
+        src: 'image/kolase2/3.jpeg'
+      },
+      {
+        title: 'next memory',
+        caption: 'ini sengaja dikosongin dulu ya, nanti kalo ketemu kita isi lagi hhee.',
+        src: ''
+      }
+    ];
+
+    let state = {
+      profileName: DEFAULT_PROFILE_NAME,
+      theme: 'pink',
+      favorites: [],
+      gridPhotos: [...defaultGridPhotos],
+      sliderPhotos: [...defaultSliderPhotos]
+    };
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function loadState() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      try {
+        const parsed = JSON.parse(raw);
+        state = {
+          profileName: parsed.profileName || DEFAULT_PROFILE_NAME,
+          theme: parsed.theme || 'pink',
+          favorites: Array.isArray(parsed.favorites) ? parsed.favorites : [],
+          gridPhotos: Array.isArray(parsed.gridPhotos) && parsed.gridPhotos.length ? parsed.gridPhotos : [...defaultGridPhotos],
+          sliderPhotos: Array.isArray(parsed.sliderPhotos) && parsed.sliderPhotos.length ? parsed.sliderPhotos : [...defaultSliderPhotos]
+        };
+      } catch (e) {
+        state = {
+          profileName: DEFAULT_PROFILE_NAME,
+          theme: 'pink',
+          favorites: [],
+          gridPhotos: [...defaultGridPhotos],
+          sliderPhotos: [...defaultSliderPhotos]
+        };
+      }
+    }
+
+    function showScreen(target) {
+      Object.entries(screens).forEach(([key, el]) => {
+        if (key === target) {
+          el.classList.remove('hidden-left', 'hidden-right');
+        } else {
+          el.classList.add(target === 'homeScreen' ? 'hidden-right' : 'hidden-left');
+        }
+      });
+      navButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.screen === target));
+    }
+
+    function renderGallery() {
+      galleryGrid.innerHTML = '';
+      state.gridPhotos.forEach((photo) => {
+        const item = document.createElement('button');
+        item.className = 'polaroid';
+        item.dataset.title = photo.title;
+        item.dataset.date = photo.date;
+        item.dataset.tag = photo.tag;
+        item.dataset.desc = photo.desc;
+        item.dataset.src = photo.src;
+        item.innerHTML = `
+          <div class="tape"></div>
+          <img class="photo" src="${photo.src}" alt="${photo.title}">
+          <div class="caption"><strong>${photo.title}</strong></div>
+        `;
+        galleryGrid.appendChild(item);
+      });
+      bindPhotoClicks();
+    }
+
+    function renderSlider() {
+      sliderTrack.innerHTML = '';
+      state.sliderPhotos.forEach((photo, index) => {
+        const slide = document.createElement('div');
+        slide.className = 'slide';
+        const isBlankSlide = !photo.src;
+        const mediaMarkup = isBlankSlide
+          ? `<div class="blank-slide"><span>soon</span></div>`
+          : `<img src="${photo.src}" alt="${photo.title || `Slide ${index + 1}`}">`;
+        slide.innerHTML = `
+          ${mediaMarkup}
+          <div class="slide-caption">
+            <h3>${photo.title}</h3>
+            <p>${photo.caption}</p>
+          </div>
+        `;
+        sliderTrack.appendChild(slide);
+      });
+      currentSlide = 0;
+      sliderTrack.style.transform = 'translateX(0%)';
+      renderDots();
+    }
+
+    function getPhotoCards() {
+      return [...document.querySelectorAll('.polaroid')];
+    }
+
+    function openPhotoByIndex(index) {
+      const cards = getPhotoCards();
+      if (!cards.length) return;
+      currentPhotoIndex = (index + cards.length) % cards.length;
+      const card = cards[currentPhotoIndex];
+      detailImage.src = card.dataset.src;
+      detailTitle.textContent = card.dataset.title;
+      detailDesc.textContent = card.dataset.desc;
+      detailDate.textContent = card.dataset.date;
+      detailTag.textContent = card.dataset.tag;
+      likePhoto.textContent = state.favorites.includes(card.dataset.src) ? 'Disukai' : 'Simpan';
+      showScreen('detailScreen');
+    }
+
+    function bindPhotoClicks() {
+      getPhotoCards().forEach((card, index) => {
+        card.onclick = () => openPhotoByIndex(index);
+      });
+    }
+
+    function getSlides() {
+      return [...sliderTrack.querySelectorAll('.slide')];
+    }
+
+
+    function enterApp(name) {
+      currentUserName = name && name.trim() ? name.trim() : state.profileName || DEFAULT_PROFILE_NAME;
+      state.profileName = currentUserName;
+      appTitle.textContent = currentUserName;
+      saveState();
+      showScreen('homeScreen');
+    }
+
+    loadState();
+    state.profileName = DEFAULT_PROFILE_NAME;
+    state.gridPhotos = [...defaultGridPhotos];
+    state.sliderPhotos = [...defaultSliderPhotos];
+    renderGallery();
+    renderSlider();
+    appTitle.textContent = state.profileName;
+
+    setTimeout(() => {
+      splashScreen.classList.add('hidden');
+      enterApp(state.profileName || DEFAULT_PROFILE_NAME);
+    }, 1800);
+
+
+    navButtons.forEach(btn => btn.addEventListener('click', () => showScreen(btn.dataset.screen)));
+    backToHome.addEventListener('click', () => showScreen('homeScreen'));
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabButtons.forEach(b => b.classList.remove('active'));
+        views.forEach(v => v.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    prevPhoto.addEventListener('click', () => openPhotoByIndex(currentPhotoIndex - 1));
+    nextPhoto.addEventListener('click', () => openPhotoByIndex(currentPhotoIndex + 1));
+
+    document.getElementById('shareBtn').addEventListener('click', () => {
+      alert('Nanti tombol ini bisa dipakai untuk share link foto atau kirim ke teman.');
+    });
+
+    likePhoto.addEventListener('click', () => {
+      const src = detailImage.src;
+      if (state.favorites.includes(src)) {
+        state.favorites = state.favorites.filter(item => item !== src);
+        likePhoto.textContent = 'Simpan';
+      } else {
+        state.favorites.push(src);
+        likePhoto.textContent = 'Disukai';
+      }
+      saveState();
+    });
+
+    function renderDots() {
+      dotsWrap.innerHTML = '';
+      getSlides().forEach((_, index) => {
+        const dot = document.createElement('button');
+        dot.className = 'dot' + (index === currentSlide ? ' active' : '');
+        dot.addEventListener('click', () => goToSlide(index));
+        dotsWrap.appendChild(dot);
+      });
+    }
+
+    function goToSlide(index) {
+      const slides = getSlides();
+      if (!slides.length) return;
+      currentSlide = (index + slides.length) % slides.length;
+      sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+      renderDots();
+    }
+
+    document.getElementById('prevSlide').addEventListener('click', () => goToSlide(currentSlide - 1));
+    document.getElementById('nextSlide').addEventListener('click', () => goToSlide(currentSlide + 1));
+
+    let startX = 0;
+    let isSwiping = false;
+    document.getElementById('sliderShell').addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      isSwiping = true;
+    });
+
+    document.getElementById('sliderShell').addEventListener('touchend', (e) => {
+      if (!isSwiping) return;
+      const endX = e.changedTouches[0].clientX;
+      const diff = endX - startX;
+      if (Math.abs(diff) > 40) {
+        if (diff < 0) goToSlide(currentSlide + 1);
+        else goToSlide(currentSlide - 1);
+      }
+      isSwiping = false;
+    });
+    renderDots();
+
+
+    musicBtn.addEventListener('click', async () => {
+      try {
+        if (!isPlaying) {
+          await bgMusic.play();
+          isPlaying = true;
+          musicBtn.classList.add('playing');
+          musicBtn.setAttribute('aria-label', 'Jeda musik');
+          musicBtn.setAttribute('title', 'Jeda musik');
+        } else {
+          bgMusic.pause();
+          isPlaying = false;
+          musicBtn.classList.remove('playing');
+          musicBtn.setAttribute('aria-label', 'Putar musik');
+          musicBtn.setAttribute('title', 'Putar musik');
+        }
+      } catch (e) {
+        alert('Musik belum bisa diputar, coba klik lagi ya.');
+      }
+    });
+
+
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
